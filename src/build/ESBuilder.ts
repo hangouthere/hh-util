@@ -1,5 +1,6 @@
 import envPlugin from '@chialab/esbuild-plugin-env';
 import htmlPlugin from '@chialab/esbuild-plugin-html';
+import chalk from 'chalk';
 import esbuild, { type BuildContext, type BuildOptions, type Platform } from 'esbuild';
 import copyStaticFiles from 'esbuild-copy-static-files';
 import sassPlugin from 'esbuild-plugin-sass';
@@ -193,6 +194,7 @@ export class ESBuilder {
 
     if (opts.forceBuildOnly || this.isProd) {
       await this._runBuild(opts);
+      await esbuildContext.dispose();
     } else {
       await this._runDevServer(esbuildContext, opts);
     }
@@ -203,6 +205,10 @@ export class ESBuilder {
    */
   protected async _runBuild(opts: ESBuilderOptions) {
     const buildResult = await esbuild.build(opts.buildOptions);
+
+    const chosenColor = isProd ? chalk.redBright : chalk.yellowBright;
+
+    console.log(chosenColor('Building Bundle...'));
 
     if (opts.verbose) {
       console.log('\n-- Verbose Start', Array(20).fill('-').join(''));
@@ -218,6 +224,8 @@ export class ESBuilder {
    * Useful for web-work, not so much node-work
    */
   protected async _runDevServer(esbuildContext: BuildContext, opts: ESBuilderOptions) {
+    console.log(chalk.greenBright('Running Dev Server...'));
+
     const { host, port } = await esbuildContext.serve({
       port: opts.devPort,
       servedir: opts.dirOut

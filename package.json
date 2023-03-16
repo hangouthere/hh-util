@@ -1,7 +1,7 @@
 {
   "name": "@nfg/util",
   "description": "Utility Library for NFG products",
-  "version": "0.0.2-0",
+  "version": "0.0.2-7",
   "license": "MIT",
   "author": "CodexHere <codexhere@outlook.com>",
   "main": "./dist/index.js",
@@ -20,8 +20,8 @@
     "dev:bundle": "EXTERNALS=\"./node_modules*\" FORCEBUILDONLY=1 RUNTIMEPLATFORM=node FILESRC=index.ts nodemon -e ts,js,mjs,mts --watch ./src --exec \".scripts/builder.mts\"",
     "test": "vitest --coverage",
     "test:debug": "node --inspect-brk=0.0.0.0:9229 ./node_modules/vitest/vitest.mjs --threads false",
-    "prod": "npm run build:types && NODE_ENV=production concurrently -r 'npm:prod:*'",
-    "prod:bundle": "EXTERNALS=\"./node_modules*\" RUNTIMEPLATFORM=node FILESRC=index.ts .scripts/builder.mts",
+    "prod": "npm run build:types && NODE_ENV=production npm run prod:bundle",
+    "prod:bundle": "EXTERNALS=\"./node_modules*\" RUNTIMEPLATFORM=node FORCEBUILDONLY=1 FILESRC=index.ts .scripts/builder.mts",
     "publish:registry": "npm run prod && npm version prerelease && npm publish && npm run _trigger",
     "lint": "eslint ."
   },
