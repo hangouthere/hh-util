@@ -1,9 +1,4 @@
 {
-  "ts-node": {
-    "esm": true,
-    "files": true
-  },
-
   "include": ["src/**/*", "tests/**/*"],
   "exclude": ["node_modules", "dist", "__mocks__/**/*"],
 
@@ -11,13 +6,11 @@
     "allowSyntheticDefaultImports": true,
     "checkJs": true,
     "esModuleInterop": true,
-    "importsNotUsedAsValues": "preserve",
-    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
     "jsx": "react-jsx",
     "module": "ESNext",
     "moduleResolution": "node",
     "outDir": "./dist",
-    "preserveValueImports": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,

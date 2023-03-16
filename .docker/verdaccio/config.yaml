@@ -3,7 +3,7 @@ plugins: /verdaccio/plugins
 
 # https://verdaccio.org/docs/webui
 web:
-  title: NFG Verdaccio Instance
+  title: Local Verdaccio Instance
   gravatar: false
   darkMode: true
   login: false

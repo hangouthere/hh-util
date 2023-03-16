@@ -1,6 +1,6 @@
 import envPlugin from '@chialab/esbuild-plugin-env';
 import htmlPlugin from '@chialab/esbuild-plugin-html';
-import esbuild, { type BuildOptions, type Platform } from 'esbuild';
+import esbuild, { type BuildContext, type BuildOptions, type Platform } from 'esbuild';
 import copyStaticFiles from 'esbuild-copy-static-files';
 import sassPlugin from 'esbuild-plugin-sass';
 import path from 'path';
@@ -8,7 +8,7 @@ import { definedProps } from '../core/index.js';
 
 const isProd = process.env.NODE_ENV === 'production';
 
-export interface ESBuilderOptions {
+interface ESBuilderOptions {
   dirStatic: string;
   dirOut: string;
   dirSrc: string;
@@ -41,10 +41,10 @@ const DEFAULT_ESBUILDEROPTIONS: Partial<ESBuilderOptions> = {
 };
 
 const ENV_ESBUILDEOPTIONS: Partial<ESBuilderOptions> = {
-  devPort: !!process.env.DEVPORT ? parseInt(process.env.DEVPORT!) : undefined,
-  dirSrc: !!process.env.DIRSRC ? path.resolve(process.env.DIRSRC!) : undefined!,
-  dirOut: !!process.env.DIROUT ? process.env.DIROUT! : undefined!,
-  dirStatic: !!process.env.DIRSTATIC ? process.env.DIRSTATIC! : undefined!,
+  devPort: process.env.DEVPORT ? parseInt(process.env.DEVPORT) : undefined,
+  dirSrc: process.env.DIRSRC ? path.resolve(process.env.DIRSRC) : undefined,
+  dirOut: process.env.DIROUT ? process.env.DIROUT : undefined,
+  dirStatic: process.env.DIRSTATIC ? process.env.DIRSTATIC : undefined,
   forceBuildOnly: !!process.env.FORCEBUILDONLY,
   nodeEnv: process.env.NODE_ENV || 'development',
   verbose: !!process.env.VERBOSE,
@@ -52,11 +52,11 @@ const ENV_ESBUILDEOPTIONS: Partial<ESBuilderOptions> = {
   buildOptions: {
     metafile: true,
     minify: isProd,
-    outdir: !!process.env.DIROUT ? process.env.DIROUT! : undefined,
-    platform: !!process.env.RUNTIMEPLATFORM ? (process.env.RUNTIMEPLATFORM as Platform) : undefined,
+    outdir: process.env.DIROUT ? process.env.DIROUT : undefined,
+    platform: process.env.RUNTIMEPLATFORM ? (process.env.RUNTIMEPLATFORM as Platform) : undefined,
     sourcemap: isProd ? false : 'inline',
-    target: !!process.env.JSTARGET ? process.env.JSTARGET! : undefined,
-    logLevel: !!process.env.VERBOSE ? 'debug' : 'info'
+    target: process.env.JSTARGET ? process.env.JSTARGET : undefined,
+    logLevel: process.env.VERBOSE ? 'debug' : 'info'
   }
 };
 
@@ -87,7 +87,7 @@ export class ESBuilder {
    * Resolve proper Root Path for project
    */
   get rootPath() {
-    return this._options.dirSrc || ENV_ESBUILDEOPTIONS.dirSrc || DEFAULT_ESBUILDEROPTIONS.dirSrc!;
+    return this._options.dirSrc || ENV_ESBUILDEOPTIONS.dirSrc || DEFAULT_ESBUILDEROPTIONS.dirSrc || __dirname;
   }
 
   /**
@@ -97,7 +97,7 @@ export class ESBuilder {
    */
   get entryPoints(): BuildOptions['entryPoints'] {
     // Grab ENV value, or default to index.html
-    const entryPoints = (!!process.env.FILESRC ? process.env.FILESRC.split('|') : []) || ['index.html'];
+    const entryPoints = (process.env.FILESRC ? process.env.FILESRC.split('|') : []) || ['index.html'];
 
     console.log('Root Path:', this.rootPath);
 
@@ -111,7 +111,7 @@ export class ESBuilder {
    * See: https://esbuild.github.io/api/#external
    */
   get externals(): BuildOptions['external'] {
-    return (!!process.env.EXTERNALS ? process.env.EXTERNALS.split('|') : []) || [];
+    return (process.env.EXTERNALS ? process.env.EXTERNALS.split('|') : []) || [];
   }
 
   /**
@@ -157,8 +157,8 @@ export class ESBuilder {
     // Continue building based on Defaults+ENV
     opts = Object.assign(opts, {
       buildOptions: Object.assign(
-        definedProps<BuildOptions>(DEFAULT_ESBUILDEROPTIONS.buildOptions!),
-        definedProps<BuildOptions>(ENV_ESBUILDEOPTIONS.buildOptions!),
+        definedProps<BuildOptions>(DEFAULT_ESBUILDEROPTIONS.buildOptions ?? {}),
+        definedProps<BuildOptions>(ENV_ESBUILDEOPTIONS.buildOptions ?? {}),
         definedProps<BuildOptions>(opts.buildOptions),
         {
           outdir: opts.dirOut,
@@ -170,10 +170,12 @@ export class ESBuilder {
     });
 
     if (opts.verbose) {
-      console.log('Input Options', this._options);
-      console.log('Default Options', DEFAULT_ESBUILDEROPTIONS);
-      console.log('ENV-based Options', ENV_ESBUILDEOPTIONS);
-      console.log('Derived Options', opts);
+      console.log('\n-- Verbose Start', Array(20).fill('-').join(''));
+      console.log('Input Options', this._options, '\n');
+      console.log('Default Options', DEFAULT_ESBUILDEROPTIONS, '\n');
+      console.log('ENV-based Options', ENV_ESBUILDEOPTIONS, '\n');
+      console.log('Derived Options', opts, '\n');
+      console.log(Array(20).fill('-').join(''), 'Verbose End --');
     }
 
     return opts;
@@ -187,10 +189,12 @@ export class ESBuilder {
   async build() {
     const opts = this.options;
 
+    const esbuildContext = await esbuild.context(opts.buildOptions);
+
     if (opts.forceBuildOnly || this.isProd) {
       await this._runBuild(opts);
     } else {
-      await this._runDevServer(opts);
+      await this._runDevServer(esbuildContext, opts);
     }
   }
 
@@ -201,7 +205,9 @@ export class ESBuilder {
     const buildResult = await esbuild.build(opts.buildOptions);
 
     if (opts.verbose) {
+      console.log('\n-- Verbose Start', Array(20).fill('-').join(''));
       console.log('Build Result', buildResult);
+      console.log(Array(20).fill('-').join(''), 'Verbose End --');
     }
 
     console.log(`Build (${opts.nodeEnv}) Complete:\n\tBuildDir: ${opts.dirOut}`);
@@ -211,14 +217,11 @@ export class ESBuilder {
    * Run Dev Server for continuous building and serving files.
    * Useful for web-work, not so much node-work
    */
-  protected async _runDevServer(opts: ESBuilderOptions) {
-    const { host, port } = await esbuild.serve(
-      {
-        port: opts.devPort,
-        servedir: opts.dirOut
-      },
-      opts.buildOptions
-    );
+  protected async _runDevServer(esbuildContext: BuildContext, opts: ESBuilderOptions) {
+    const { host, port } = await esbuildContext.serve({
+      port: opts.devPort,
+      servedir: opts.dirOut
+    });
 
     console.log(`Dev Server Running:\n\tServeDir:  ${opts.dirOut}\n\tDevServer: ${host}:${port}`);
   }

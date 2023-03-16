@@ -4,17 +4,43 @@ Utilities, scripts, and library for NFG-based projects.
 
 ## Running/Building
 
-For Active Development:
+Most operations are intended to be executed via `docker compose`, however you should be able to run on a host system directly.
+
+### Active Development
+
+Run locally in a `docker compose` environment:
 
 ```sh
-docker-compose -f ./docker-compose.yml -f ./docker-compose.dev.yml up
+./.scripts/run-dev.sh
 ```
 
-For a Production bundle:
+or, if you need a local private registry:
 
 ```sh
-docker-compose -f ./docker-compose.yml -f ./docker-compose.prod.yml up
+./.scripts/run-dev_linked.sh
 ```
+
+> This is useful for iterative module publishing for propagating changes locally, without having to push to `npmjs`.
+
+### Tests
+
+To run all tests through `docker compose`:
+
+```sh
+./.scripts/run-test.sh
+```
+
+### Production
+
+For a Production bundle through `docker compose`:
+
+```sh
+./.scripts/run-prod.sh
+```
+
+## Dependencies
+
+Throughout development, you may need to add or upgrade dependencies for this library.
 
 ### Adding Dependencies
 
@@ -26,6 +52,14 @@ docker exec -it nfg-util npm i -D someutil
 #or
 
 docker exec -it nfg-util ash # You're now in a shell!
+```
+
+### Mass Updating Dependencies
+
+To update all dependencies at once, we'll rely on `npm-check-updates` to do the dirty work for us through `docker compose`:
+
+```sh
+./.scripts/run-update-deps.sh
 ```
 
 ## Files

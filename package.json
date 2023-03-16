@@ -3,12 +3,11 @@
   "description": "Utility Library for NFG products",
   "version": "0.0.2-0",
   "license": "MIT",
-  "author": "Codex <nfg.codex@outlook.com>",
+  "author": "CodexHere <codexhere@outlook.com>",
   "main": "./dist/index.js",
   "type": "module",
   "bin": {
-    "nfg-builder": "./.scripts/builder.mts",
-    "nfg-compose": "./.scripts/compose.mjs"
+    "nfg-builder": "./.scripts/builder.mts"
   },
   "scripts": {
     "postinstall": "npm run _trigger",
@@ -17,47 +16,45 @@
     "predev": "npm i && npm run clean",
     "preprod": "NODE_ENV=development npm i && npm run clean",
     "build:types": "tsc --emitDeclarationOnly --declaration",
-    "dev": "NODE_ENV=development concurrently -r 'npm:dev:*'",
+    "dev": "NODE_ENV=development npm run build:types && npm run dev:bundle",
+    "dev:bundle": "EXTERNALS=\"./node_modules*\" FORCEBUILDONLY=1 RUNTIMEPLATFORM=node FILESRC=index.ts nodemon -e ts,js,mjs,mts --watch ./src --exec \".scripts/builder.mts\"",
     "test": "vitest --coverage",
     "test:debug": "node --inspect-brk=0.0.0.0:9229 ./node_modules/vitest/vitest.mjs --threads false",
-    "prod": "NODE_ENV=production concurrently -r 'npm:prod:*'",
-    "dev:bundle": "EXTERNALS=\"./node_modules*\" FORCEBUILDONLY=1 RUNTIMEPLATFORM=node FILESRC=index.ts nodemon -e ts,js,mjs,mts --watch ./src --exec \".scripts/builder.mts\"",
-    "dev:types": "npm run build:types",
+    "prod": "npm run build:types && NODE_ENV=production concurrently -r 'npm:prod:*'",
     "prod:bundle": "EXTERNALS=\"./node_modules*\" RUNTIMEPLATFORM=node FILESRC=index.ts .scripts/builder.mts",
-    "prod:types": "npm run build:types",
     "publish:registry": "npm run prod && npm version prerelease && npm publish && npm run _trigger",
     "lint": "eslint ."
   },
   "dependencies": {
-    "c8": "^7.12.0",
+    "c8": "^7.13.0",
     "debug": "^4.3.4",
-    "electron": "^22.0.0",
+    "electron": "^23.1.4",
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
     "@types/lodash.get": "^4.4.7",
-    "@types/lodash.set": "^4.3.7",
-    "chalk": "^5.1.2"
+    "@types/lodash.set": "^4.3.7"
   },
   "peerDependencies": {
-    "@chialab/esbuild-plugin-env": "^0.16.0",
-    "@chialab/esbuild-plugin-html": "^0.16.3",
-    "@types/node": "^18.6.3",
-    "@typescript-eslint/eslint-plugin": "^5.32.0",
-    "@typescript-eslint/parser": "^5.32.0",
-    "concurrently": "^7.3.0",
-    "esbuild": "^0.14.53",
+    "@chialab/esbuild-plugin-env": "^0.17.1",
+    "@chialab/esbuild-plugin-html": "^0.17.2",
+    "@types/node": "^18.15.3",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
+    "chalk": "^5.2.0",
+    "concurrently": "^7.6.0",
     "esbuild-copy-static-files": "^0.1.0",
     "esbuild-plugin-sass": "^1.0.1",
-    "eslint": "^8.21.0",
-    "nodemon": "^2.0.19",
-    "rimraf": "^3.0.2",
+    "esbuild": "^0.17.11",
+    "eslint": "^8.36.0",
+    "nodemon": "^2.0.21",
+    "rimraf": "^4.4.0",
     "ts-node": "^10.9.1",
-    "typescript": "^4.7.4",
-    "vitest": "^0.20.3",
-    "zx": "^7.0.8"
+    "tsx": "^3.12.5",
+    "typescript": "^5.0.2",
+    "vitest": "^0.29.3"
   },
   "______________________________": "------------------------------",
   "keywords": [
