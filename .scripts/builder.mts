@@ -1,4 +1,4 @@
-#!/usr/local/bin/npx ts-node
+#!/usr/local/bin/npx tsx
 
 import { ESBuilder } from '../src/build/ESBuilder.js';
 
