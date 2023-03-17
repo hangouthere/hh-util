@@ -74,17 +74,8 @@
     "scope": "@nfg"
   },
   "exports": {
+    "./tsconfig": "./tsconfig.json",
     "./prettier": "./.prettierrc.cjs",
     "./*": "./dist/*"
-  },
-  "typesVersions": {
-    "*": {
-      "tsconfig": [
-        "./tsconfig.json"
-      ],
-      "*": [
-        "./dist/*"
-      ]
-    }
   }
 }
