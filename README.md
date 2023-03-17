@@ -21,6 +21,10 @@ or, if you need a local private registry:
 ```
 
 > This is useful for iterative module publishing for propagating changes locally, without having to push to `npmjs`.
+> To publish to local registry that is started in this environment, use the following `docker` command:
+> ```sh
+> docker exec -it nfg-util npm run publish:registry
+> ```
 
 ### Tests
 
@@ -75,6 +79,23 @@ To update all dependencies at once, we'll rely on `npm-check-updates` to do the 
 | build     | Build toolchain code.                                                  |
 | core      | Core/Common Utility functions that are effectively namespace-agnostic. |
 | plugin    | ESM-based Plugin Architecture.                                         |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

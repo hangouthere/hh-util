@@ -1,7 +1,7 @@
 {
   "name": "@nfg/util",
   "description": "Utility Library for NFG products",
-  "version": "0.0.2-7",
+  "version": "0.0.2-8",
   "license": "MIT",
   "author": "CodexHere <codexhere@outlook.com>",
   "main": "./dist/index.js",
@@ -15,15 +15,17 @@
     "clean": "rimraf ./dist",
     "predev": "npm i && npm run clean",
     "preprod": "NODE_ENV=development npm i && npm run clean",
+    "build:lint": "eslint .",
     "build:types": "tsc --emitDeclarationOnly --declaration",
-    "dev": "NODE_ENV=development npm run build:types && npm run dev:bundle",
+    "dev": "NODE_ENV=development concurrently npm:dev:*",
+    "dev:types": "nodemon -e ts,js,mjs,mts --watch ./src --exec \"npm run build:lint && npm run build:types\"",
     "dev:bundle": "EXTERNALS=\"./node_modules*\" FORCEBUILDONLY=1 RUNTIMEPLATFORM=node FILESRC=index.ts nodemon -e ts,js,mjs,mts --watch ./src --exec \".scripts/builder.mts\"",
     "test": "vitest --coverage",
     "test:debug": "node --inspect-brk=0.0.0.0:9229 ./node_modules/vitest/vitest.mjs --threads false",
     "prod": "npm run build:types && NODE_ENV=production npm run prod:bundle",
     "prod:bundle": "EXTERNALS=\"./node_modules*\" RUNTIMEPLATFORM=node FORCEBUILDONLY=1 FILESRC=index.ts .scripts/builder.mts",
-    "publish:registry": "npm run prod && npm version prerelease && npm publish && npm run _trigger",
-    "lint": "eslint ."
+    "prod:publish": "npm run prod && npm run publish:registry",
+    "publish:registry": "npm version prerelease && npm publish && npm run _trigger"
   },
   "dependencies": {
     "c8": "^7.13.0",
@@ -33,13 +35,13 @@
     "lodash.set": "^4.3.2"
   },
   "devDependencies": {
-    "@types/debug": "^4.1.7",
     "@types/lodash.get": "^4.4.7",
     "@types/lodash.set": "^4.3.7"
   },
   "peerDependencies": {
     "@chialab/esbuild-plugin-env": "^0.17.1",
     "@chialab/esbuild-plugin-html": "^0.17.2",
+    "@types/debug": "^4.1.7",
     "@types/node": "^18.15.3",
     "@typescript-eslint/eslint-plugin": "^5.55.0",
     "@typescript-eslint/parser": "^5.55.0",
