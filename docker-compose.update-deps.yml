@@ -8,7 +8,8 @@ services:
     working_dir: '/app'
     volumes:
       - '.:/app'
-    command: "sh -c 'npx -y npm-check-updates -u --dep prod && \
-      npx -y npm-check-updates -u --dep dev && \
-      npx -y npm-check-updates -u --dep optional && \
-      npx -y npm-check-updates -u --dep peer'"
+    command: 'tail -f /dev/null'
+    # command: "sh -c 'npx -y npm-check-updates -u --dep prod && \
+    #   npx -y npm-check-updates -u --dep dev && \
+    #   npx -y npm-check-updates -u --dep optional && \
+    #   npx -y npm-check-updates -u --dep peer'"
