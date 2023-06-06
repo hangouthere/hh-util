@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   nfg-util:
-    image: node:18-alpine
+    image: node:18-alpine3.18
     container_name: nfg-util
     stdin_open: true
     tty: true
