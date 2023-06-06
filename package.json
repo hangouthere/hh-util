@@ -1,18 +1,13 @@
 {
   "name": "@nfg/util",
   "description": "Utility Library for NFG products",
-  "version": "0.0.2-8",
+  "version": "0.0.2-7",
   "license": "MIT",
   "author": "CodexHere <codexhere@outlook.com>",
   "main": "./dist/index.js",
   "type": "module",
   "bin": {
-    "nfg-builder": "./.scripts/builder.mts",
-    "hh-dev": "./.scripts/run-dev.sh",
-    "hh-dev-linked": "./.scripts/run-linked.sh",
-    "hh-test": "./.scripts/run-test.sh",
-    "hh-prod": "./.scripts/run-prod.sh",
-    "hh-update": "./.scripts/run-update-deps.sh"
+    "nfg-builder": "./.scripts/builder.mts"
   },
   "engines": {
     "node": "=18"
