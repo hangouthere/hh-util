@@ -1,14 +1,14 @@
 {
   "name": "@hangouthere/util",
   "description": "Utility Library for HangoutHere products",
-  "version": "0.0.1",
+  "version": "0.0.1-0",
   "license": "MIT",
   "author": "CodexHere <codexhere@outlook.com>",
   "main": "./dist/index.js",
   "type": "module",
   "bin": {
     "hh-builder": "./.scripts/npm/builder.mts",
-    "hh-clean": "./.scripts/npm/clean.mts",
+    "hh-clean": "./.scripts/npm/clean.sh",
     "hh-build_lint": "./.scripts/npm/build_lint.sh",
     "hh-build_types": "./.scripts/npm/build_types.sh",
     "hh-dev": "./.scripts/npm/dev.sh",

@@ -7,4 +7,4 @@ docker compose \
   -f docker-compose.test.yml \
   -f docker-compose.prod.yml \
   -f docker-compose.update-deps.yml \
-  down
+  down --volumes

@@ -2,15 +2,15 @@ import debug from 'debug';
 
 let logger: debug.Debugger;
 
-const buildLogger = (appName: string) => {
+const buildLogger = (debugName: string) => {
   if (logger) {
     return logger;
   }
 
-  debug.enable(`${appName}*`);
-  logger = debug(appName);
+  debug.enable(`${debugName}*`);
+  logger = debug(debugName);
 
   return logger;
 };
 
-export default buildLogger(process.env.APPNAME || 'NoAppName');
+export default buildLogger(process.env.DEBUGNAME || 'NoDebugName');
