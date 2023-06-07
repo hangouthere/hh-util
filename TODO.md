@@ -3,6 +3,10 @@
 ## General
 
 * Revisit linting (not sure what's missing)
+* Create `Dockerfile` to add:
+    * git
+        * Will fix publishing error since `git` is missing:
+        > This is a Git checkout, but the git command was not found. npm could not create a Git tag for this release!
 
 ## Plugins
 * Clean up language between Accessor and Behavior
