@@ -1,8 +1,8 @@
 version: '3.7'
 
 services:
-  nfg-util:
-    command: 'npm run dev'
+  hangouthere-util:
+    command: 'npx hh-dev'
     volumes:
       - ./.docker/.npmrc-localRegistry:/app/.npmrc
     networks:

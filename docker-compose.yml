@@ -1,9 +1,9 @@
 version: '3.7'
 
 services:
-  nfg-util:
+  hangouthere-util:
     image: node:18-alpine3.18
-    container_name: nfg-util
+    container_name: hangouthere-util
     stdin_open: true
     tty: true
     user: '1000'

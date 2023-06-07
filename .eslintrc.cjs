@@ -9,12 +9,15 @@ module.exports = {
     node: true
   },
   overrides: [
+    // Ignore explicity `any` types for test files
     {
       files: ['*.test.ts', '*.spec.ts', '*.test.js', '*.spec.js', '__mocks__/*'],
       rules: {
         '@typescript-eslint/no-explicit-any': 'off'
       }
     },
+
+    // Ingore unused vars prefixed with an underscore
     {
       files: ['*.ts', '*.js'],
       rules: {

@@ -1,34 +1,26 @@
 {
-  "name": "@nfg/util",
-  "description": "Utility Library for NFG products",
-  "version": "0.0.2-7",
+  "name": "@hangouthere/util",
+  "description": "Utility Library for HangoutHere products",
+  "version": "0.0.1",
   "license": "MIT",
   "author": "CodexHere <codexhere@outlook.com>",
   "main": "./dist/index.js",
   "type": "module",
   "bin": {
-    "nfg-builder": "./.scripts/builder.mts"
+    "hh-builder": "./.scripts/npm/builder.mts",
+    "hh-clean": "./.scripts/npm/clean.mts",
+    "hh-build_lint": "./.scripts/npm/build_lint.sh",
+    "hh-build_types": "./.scripts/npm/build_types.sh",
+    "hh-dev": "./.scripts/npm/dev.sh",
+    "hh-dev_types": "./.scripts/npm/dev_types.sh",
+    "hh-dev_bundle": "./.scripts/npm/dev_bundle.sh",
+    "hh-dev-linked": "./.scripts/npm/dev-linked.sh",
+    "hh-test": "./.scripts/npm/test.sh",
+    "hh-prod": "./.scripts/npm/prod.sh",
+    "hh-publish": "./.scripts/npm/publish.sh"
   },
   "engines": {
     "node": "=18"
-  },
-  "scripts": {
-    "_postinstall": "npm run _trigger",
-    "_trigger": "echo `date` > .trigger_nfg_util",
-    "clean": "rimraf ./dist",
-    "predev": "npm i && npm run clean",
-    "preprod": "NODE_ENV=development npm i && npm run clean",
-    "build:lint": "eslint .",
-    "build:types": "tsc --emitDeclarationOnly --declaration",
-    "dev": "NODE_ENV=development concurrently npm:dev:*",
-    "dev:types": "nodemon -e ts,js,mjs,mts --watch ./src --exec \"npm run build:lint && npm run build:types\"",
-    "dev:bundle": "EXTERNALS=\"./node_modules*\" FORCEBUILDONLY=1 RUNTIMEPLATFORM=node FILESRC=index.ts nodemon -e ts,js,mjs,mts --watch ./src --exec \".scripts/builder.mts\"",
-    "test": "vitest --coverage",
-    "test:debug": "node --inspect-brk=0.0.0.0:9229 ./node_modules/vitest/vitest.mjs --threads false",
-    "prod": "npm run build:types && NODE_ENV=production npm run prod:bundle",
-    "prod:bundle": "EXTERNALS=\"./node_modules*\" RUNTIMEPLATFORM=node FORCEBUILDONLY=1 FILESRC=index.ts .scripts/builder.mts",
-    "prod:publish": "npm run prod && npm run publish:registry",
-    "publish:registry": "npm version prerelease && npm publish && npm run _trigger"
   },
   "dependencies": {
     "c8": "^7.14.0",
@@ -63,18 +55,16 @@
   },
   "______________________________": "------------------------------",
   "keywords": [
-    "nerdfoundry",
-    "nerdfoundrygaming",
-    "nfg",
-    "nfgutil",
-    "nfg-util",
+    "hangouthere",
+    "hangouthereutil",
+    "hangouthere-util",
     "typescript",
     "tsconfig",
     "utility"
   ],
   "publishConfig": {
     "access": "public",
-    "scope": "@nfg"
+    "scope": "@hangouthere"
   },
   "exports": {
     "./tsconfig": "./tsconfig.json",
