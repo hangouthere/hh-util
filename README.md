@@ -1,4 +1,4 @@
-# hh-util
+# @hangouthere/util
 
 Utilities, scripts, and library for HangoutHere projects.
 
@@ -68,8 +68,8 @@ To update all dependencies at once, we'll rely on `npm-check-updates` to do the 
 
 ## Files
 
-| Path          | Description                                |
-| ------------- | ------------------------------------------ |
+| Path          | Description                                        |
+| ------------- | -------------------------------------------------- |
 | tsconfig.json | Base `tsconfig.json` for all HangoutHere projects. |
 
 ## Namespaces
