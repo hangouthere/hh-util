@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Run project in linked development mode.
-# This will enable local linking for iterative development with unpublished libs
+# This will enable local linking for iterative development with privately & locally libs
 
 docker compose \
   -f ./docker-compose.yml \

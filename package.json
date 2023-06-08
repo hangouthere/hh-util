@@ -7,17 +7,22 @@
   "main": "./dist/index.js",
   "type": "module",
   "bin": {
+    "hh-util_clean": "./.scripts/npm/util_clean.sh",
+    "hh-util_nodemon": "./.scripts/npm/util_nodemon.sh",
+    "hh-util_trigger": "./.scripts/npm/util_trigger.sh",
+    "hh-util_lint": "./.scripts/npm/util_lint.sh",
+    "hh-util_buildTypes": "./.scripts/npm/util_buildTypes.sh",
     "hh-builder": "./.scripts/npm/builder.mts",
-    "hh-clean": "./.scripts/npm/clean.sh",
-    "hh-build_lint": "./.scripts/npm/build_lint.sh",
-    "hh-build_types": "./.scripts/npm/build_types.sh",
     "hh-dev": "./.scripts/npm/dev.sh",
-    "hh-dev_types": "./.scripts/npm/dev_types.sh",
-    "hh-dev_bundle": "./.scripts/npm/dev_bundle.sh",
+    "hh-prod": "./.scripts/npm/prod.sh",
+    "hh-publish": "./.scripts/npm/publish.sh",
     "hh-dev-linked": "./.scripts/npm/dev-linked.sh",
     "hh-test": "./.scripts/npm/test.sh",
-    "hh-prod": "./.scripts/npm/prod.sh",
-    "hh-publish": "./.scripts/npm/publish.sh"
+    "hh-compose-dev": "./.scripts/compose/dev.sh",
+    "hh-compose-prod": "./.scripts/compose/prod.sh",
+    "hh-compose-publish": "./.scripts/compose/publish.sh",
+    "hh-compose-test": "./.scripts/compose/test.sh",
+    "hh-compose-test-debug": "./.scripts/compose/test-debug.sh"
   },
   "engines": {
     "node": "=18"

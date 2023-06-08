@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Take down all docker containers defined in all the compose definition files
+
 docker compose \
   -f docker-compose.yml \
   -f docker-compose.dev.yml \
