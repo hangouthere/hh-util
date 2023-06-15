@@ -18,7 +18,7 @@ services:
       change-vol-ownership:
         condition: service_completed_successfully
     networks:
-      - registry
+      - hh-util_registry
 
   npm-registry:
     container_name: npm-registry
@@ -31,7 +31,7 @@ services:
     ports:
       - 4873:4873
     networks:
-      - registry
+      - hh-util_registry
 
 volumes:
   hh-triggers:
@@ -40,5 +40,5 @@ volumes:
   verdaccio-storage:
 
 networks:
-  registry:
+  hh-util_registry:
     name: hh-util_registry
