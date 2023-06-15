@@ -3,4 +3,4 @@
 nodemon \
     --verbose -e hh-util \
     --watch /_triggers \
-    --exec "npm i -D @hangouthere/util"
+    --exec "npm i -D @hangouthere/util && npm ls @hangouthere/util"

@@ -21,9 +21,10 @@ or, if you need a local private registry:
 ```
 
 > This is useful for iterative module publishing for propagating changes locally, without having to push to `npmjs`.
-> To publish to local registry that is started in this environment, use the following `docker` command:
+> To publish to local registry that is started in this environment, use the following shell script that takes in a `TRIGGER_NAME` as an argument:
 > ```sh
-> ./.scripts/compose/publish.sh
+> # ./.scripts/compose/publish.sh <TRIGGER_NAME>
+> ./.scripts/compose/publish.sh hh-util
 > ```
 
 ### Tests

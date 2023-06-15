@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # TODO: Needs to be explored more, we don't have a PROD build yet
+# TODO: Might need to pass in a flag indicating to publish after the prod build succeeds
 
 # NPM Bin Shell Script: Prod
 #
@@ -17,4 +18,4 @@ EXTERNALS="./node_modules*" \
 RUNTIMEPLATFORM=node \
 FORCEBUILDONLY=1 \
 FILESRC=index.ts \
-  .scripts/npm/util_fullBuild.sh
+  npx hh-util_fullBuild
