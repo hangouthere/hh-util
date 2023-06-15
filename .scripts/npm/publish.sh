@@ -11,4 +11,6 @@
 
 # TODO: Default to prerelease, but allow full release as well through a CLI argument
 
-npm version prerelease && npm publish
+TRIGGER_NAME=$1
+
+npm version prerelease && npm publish && npx hh-util_trigger $TRIGGER_NAME

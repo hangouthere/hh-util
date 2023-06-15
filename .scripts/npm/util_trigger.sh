@@ -4,4 +4,6 @@
 #
 # Writes trigger file passed in to the `/_triggers` path for monitoring in a Docker Container
 
-echo $(date) > /_triggers/$1
+TRIGGER_NAME=$1
+
+echo $(date) > /_triggers/trigger.$TRIGGER_NAME

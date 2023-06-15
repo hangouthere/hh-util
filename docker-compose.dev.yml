@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   hangouthere-util:
-    command: 'npx hh-dev'
+    command: 'npx hh-dev hh-util'
     environment:
       - NODE_ENV=development
       - VERBOSE=1

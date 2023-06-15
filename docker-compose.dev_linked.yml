@@ -10,7 +10,6 @@ services:
       - hh-triggers:/_triggers
 
   hangouthere-util:
-    command: 'npx hh-dev'
     volumes:
       - ./.docker/.npmrc-localRegistry:/app/.npmrc
       - hh-triggers:/_triggers/
@@ -36,6 +35,7 @@ services:
 
 volumes:
   hh-triggers:
+    name: hh-triggers
   verdaccio-plugins:
   verdaccio-storage:
 

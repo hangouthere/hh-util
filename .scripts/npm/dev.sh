@@ -17,6 +17,5 @@ FORCEBUILDONLY=1 \
 RUNTIMEPLATFORM=node \
 FILESRC=index.ts \
   npx hh-util_nodemon --exec " \
-    .scripts/npm/util_fullBuild.sh && \
-    npx hh-util_trigger hh-util \
+    npx hh-util_fullBuild \
   "
