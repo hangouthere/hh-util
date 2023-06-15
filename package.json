@@ -1,88 +1,85 @@
 {
-  "name": "@nfg/util",
-  "description": "Utility Library for NFG products",
-  "version": "0.0.2-0",
+  "name": "@hangouthere/util",
+  "description": "Utility Library for HangoutHere products",
+  "version": "0.0.1-0",
   "license": "MIT",
   "author": "CodexHere <codexhere@outlook.com>",
   "main": "./dist/index.js",
   "type": "module",
   "bin": {
-    "nfg-builder": "./.scripts/builder.mts"
+    "hh-util_clean": "./.scripts/npm/util_clean.sh",
+    "hh-util_nodemon": "./.scripts/npm/util_nodemon.sh",
+    "hh-util_trigger": "./.scripts/npm/util_trigger.sh",
+    "hh-util_triggerWatch": "./.scripts/npm/util_triggerWatch.sh",
+    "hh-util_lint": "./.scripts/npm/util_lint.sh",
+    "hh-util_buildTypes": "./.scripts/npm/util_buildTypes.sh",
+    "hh-util_fullBuild": "./.scripts/npm/util_fullBuild.sh",
+    "hh-builder": "./.scripts/npm/builder.mts",
+    "hh-dev": "./.scripts/npm/dev.sh",
+    "hh-prod": "./.scripts/npm/prod.sh",
+    "hh-publish": "./.scripts/npm/publish.sh",
+    "hh-dev-linked": "./.scripts/npm/dev-linked.sh",
+    "hh-test": "./.scripts/npm/test.sh",
+    "hh-compose-down": "./.scripts/compose/down.sh",
+    "hh-compose-dev": "./.scripts/compose/dev.sh",
+    "hh-compose-dev-linked": "./.scripts/compose/dev_linked.sh",
+    "hh-compose-prod": "./.scripts/compose/prod.sh",
+    "hh-compose-test": "./.scripts/compose/test.sh",
+    "hh-compose-test-debug": "./.scripts/compose/test-debug.sh"
   },
   "scripts": {
-    "postinstall": "npm run _trigger",
-    "_trigger": "echo `date` > .trigger_nfg_util",
-    "clean": "rimraf ./dist",
-    "predev": "npm i && npm run clean",
-    "preprod": "NODE_ENV=development npm i && npm run clean",
-    "build:types": "tsc --emitDeclarationOnly --declaration",
-    "dev": "NODE_ENV=development npm run build:types && npm run dev:bundle",
-    "dev:bundle": "EXTERNALS=\"./node_modules*\" FORCEBUILDONLY=1 RUNTIMEPLATFORM=node FILESRC=index.ts nodemon -e ts,js,mjs,mts --watch ./src --exec \".scripts/builder.mts\"",
-    "test": "vitest --coverage",
-    "test:debug": "node --inspect-brk=0.0.0.0:9229 ./node_modules/vitest/vitest.mjs --threads false",
-    "prod": "npm run build:types && NODE_ENV=production concurrently -r 'npm:prod:*'",
-    "prod:bundle": "EXTERNALS=\"./node_modules*\" RUNTIMEPLATFORM=node FILESRC=index.ts .scripts/builder.mts",
-    "publish:registry": "npm run prod && npm version prerelease && npm publish && npm run _trigger",
-    "lint": "eslint ."
+    "start": "echo \"You should use the Docker Compose scripts located in './.scripts/compose' to start this project\""
+  },
+  "engines": {
+    "node": "=18"
   },
   "dependencies": {
-    "c8": "^7.13.0",
+    "c8": "^7.14.0",
     "debug": "^4.3.4",
-    "electron": "^23.1.4",
+    "electron": "^25.0.1",
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2"
   },
   "devDependencies": {
-    "@types/debug": "^4.1.7",
     "@types/lodash.get": "^4.4.7",
     "@types/lodash.set": "^4.3.7"
   },
   "peerDependencies": {
     "@chialab/esbuild-plugin-env": "^0.17.1",
     "@chialab/esbuild-plugin-html": "^0.17.2",
-    "@types/node": "^18.15.3",
-    "@typescript-eslint/eslint-plugin": "^5.55.0",
-    "@typescript-eslint/parser": "^5.55.0",
+    "@types/debug": "^4.1.8",
+    "@types/node": "^20.2.5",
+    "@typescript-eslint/eslint-plugin": "^5.59.9",
+    "@typescript-eslint/parser": "^5.59.9",
     "chalk": "^5.2.0",
-    "concurrently": "^7.6.0",
+    "concurrently": "^8.1.0",
+    "esbuild": "^0.17.19",
     "esbuild-copy-static-files": "^0.1.0",
     "esbuild-plugin-sass": "^1.0.1",
-    "esbuild": "^0.17.11",
-    "eslint": "^8.36.0",
-    "nodemon": "^2.0.21",
-    "rimraf": "^4.4.0",
+    "eslint": "^8.42.0",
+    "nodemon": "^2.0.22",
+    "rimraf": "^5.0.1",
     "ts-node": "^10.9.1",
-    "tsx": "^3.12.5",
-    "typescript": "^5.0.2",
-    "vitest": "^0.29.3"
+    "tsx": "^3.12.7",
+    "typescript": "^5.1.3",
+    "vitest": "^0.31.4"
   },
   "______________________________": "------------------------------",
   "keywords": [
-    "nerdfoundry",
-    "nerdfoundrygaming",
-    "nfg",
-    "nfgutil",
-    "nfg-util",
+    "hangouthere",
+    "hangouthereutil",
+    "hangouthere-util",
     "typescript",
     "tsconfig",
     "utility"
   ],
   "publishConfig": {
     "access": "public",
-    "scope": "@nfg"
+    "scope": "@hangouthere"
   },
   "exports": {
+    "./tsconfig": "./tsconfig.json",
     "./prettier": "./.prettierrc.cjs",
     "./*": "./dist/*"
-  },
-  "typesVersions": {
-    "*": {
-      "tsconfig": [
-        "./tsconfig.json"
-      ],
-      "*": [
-        "./dist/*"
-      ]
-    }
   }
 }

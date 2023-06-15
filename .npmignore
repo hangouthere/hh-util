@@ -1,4 +1,6 @@
-# dotfiles
-.*
+.npmrc
+.trigger*
+.vscode
+.docker
 # compose files
 docker-compose*

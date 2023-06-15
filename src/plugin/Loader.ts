@@ -25,7 +25,7 @@ export type LoaderMeta = {
 };
 
 export default class Loader {
-  static MANIFEST_KEY: string = 'MANIFEST';
+  static MANIFEST_KEY = 'MANIFEST';
 
   pluginHost?: Host;
   depMgr?: DependencyManager;
@@ -76,7 +76,7 @@ export default class Loader {
     _DEBUG(`Initiating Plugin Detection for ${topLevelPaths.length} Scan Directories`);
 
     try {
-      for (let path of topLevelPaths) {
+      for (const path of topLevelPaths) {
         const detPlugs: Manifest[] = await this.detectPluginPackages(path);
         foundManifests = foundManifests.concat(detPlugs);
       }
@@ -98,7 +98,7 @@ export default class Loader {
     const potentialPluginDirs = await readdir(scanDir);
     const foundPlugins: Manifest[] = [];
 
-    for (let pluginDir of potentialPluginDirs) {
+    for (const pluginDir of potentialPluginDirs) {
       const isDir = (await stat(path.join(scanDir, pluginDir))).isDirectory();
 
       if (!isDir) {
@@ -158,12 +158,12 @@ export default class Loader {
       return;
     }
 
-    let solvedName = LoaderHelper.resolve(moduleName),
+    const solvedName = LoaderHelper.resolve(moduleName),
       nodeModule = LoaderHelper.cache[solvedName];
 
     if (nodeModule) {
       for (let i = 0; i < nodeModule.children.length; i++) {
-        let child = nodeModule.children[i];
+        const child = nodeModule.children[i];
         this.unloadModule(child.filename, baseDirectory);
       }
 

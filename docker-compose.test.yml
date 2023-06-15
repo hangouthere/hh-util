@@ -1,5 +1,5 @@
 version: '3.7'
 
 services:
-  nfg-util:
-    command: 'npm run test'
+  hangouthere-util:
+    command: 'npx hh-test'

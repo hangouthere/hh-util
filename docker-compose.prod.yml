@@ -1,9 +1,9 @@
 version: '3.7'
 
 services:
-  nfg-util:
-    command: 'npm run prod'
+  hangouthere-util:
+    command: 'npx hh-prod'
     environment:
       - NODE_ENV=production
     # volumes:
-    #   - '${HOME}/.npmrc-automate_nfgutils:/app/.npmrc'
+    #   - '${HOME}/.npmrc-automate_hangouthereutils:/app/.npmrc'

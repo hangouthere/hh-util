@@ -2,13 +2,10 @@ version: '3.7'
 
 services:
   update-deps:
-    image: node:18-alpine
+    image: node:18-alpine3.18
     container_name: update-deps
     user: '1000'
     working_dir: '/app'
     volumes:
       - '.:/app'
-    command: "sh -c 'npx -y npm-check-updates -u --dep prod && \
-      npx -y npm-check-updates -u --dep dev && \
-      npx -y npm-check-updates -u --dep optional && \
-      npx -y npm-check-updates -u --dep peer'"
+    command: 'tail -f /dev/null'

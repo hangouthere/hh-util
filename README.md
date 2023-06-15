@@ -1,6 +1,6 @@
-# nfg-util
+# @hangouthere/util
 
-Utilities, scripts, and library for NFG-based projects.
+Utilities, scripts, and library for HangoutHere projects.
 
 ## Running/Building
 
@@ -11,23 +11,28 @@ Most operations are intended to be executed via `docker compose`, however you sh
 Run locally in a `docker compose` environment:
 
 ```sh
-./.scripts/run-dev.sh
+./.scripts/compose/dev.sh
 ```
 
 or, if you need a local private registry:
 
 ```sh
-./.scripts/run-dev_linked.sh
+./.scripts/compose/dev_linked.sh
 ```
 
 > This is useful for iterative module publishing for propagating changes locally, without having to push to `npmjs`.
+> To publish to local registry that is started in this environment, use the following shell script that takes in a `TRIGGER_NAME` as an argument:
+> ```sh
+> # ./.scripts/compose/publish.sh <TRIGGER_NAME>
+> ./.scripts/compose/publish.sh hh-util
+> ```
 
 ### Tests
 
 To run all tests through `docker compose`:
 
 ```sh
-./.scripts/run-test.sh
+./.scripts/compose/test.sh
 ```
 
 ### Production
@@ -35,7 +40,7 @@ To run all tests through `docker compose`:
 For a Production bundle through `docker compose`:
 
 ```sh
-./.scripts/run-prod.sh
+./.scripts/compose/prod.sh
 ```
 
 ## Dependencies
@@ -47,11 +52,11 @@ Throughout development, you may need to add or upgrade dependencies for this lib
 While running in `Active Development` mode, simply exec `npm` or attach into the running container:
 
 ```sh
-docker exec -it nfg-util npm i -D someutil
+docker exec -it hh-util npm i -D someutil
 
 #or
 
-docker exec -it nfg-util ash # You're now in a shell!
+docker exec -it hh-util ash # You're now in a shell!
 ```
 
 ### Mass Updating Dependencies
@@ -59,14 +64,14 @@ docker exec -it nfg-util ash # You're now in a shell!
 To update all dependencies at once, we'll rely on `npm-check-updates` to do the dirty work for us through `docker compose`:
 
 ```sh
-./.scripts/run-update-deps.sh
+./.scripts/compose/update-deps.sh
 ```
 
 ## Files
 
-| Path          | Description                                |
-| ------------- | ------------------------------------------ |
-| tsconfig.json | Base `tsconfig.json` for all NFG projects. |
+| Path          | Description                                        |
+| ------------- | -------------------------------------------------- |
+| tsconfig.json | Base `tsconfig.json` for all HangoutHere projects. |
 
 ## Namespaces
 
@@ -75,6 +80,23 @@ To update all dependencies at once, we'll rely on `npm-check-updates` to do the 
 | build     | Build toolchain code.                                                  |
 | core      | Core/Common Utility functions that are effectively namespace-agnostic. |
 | plugin    | ESM-based Plugin Architecture.                                         |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -224,19 +246,19 @@ In the previous examples, everything was simplified to simple names, but in real
 
 What makes this Plugin architecture unique is the ability to retrieve, or *access* ,Plugins by an `AccessorName`, which in turn must match a `BehaviorName`. Because of the nature of `BehaviorName`s, *multiple* Plugins can satisfy a generic request, however only *one* can satisfy a *Fully Qualified Name* (FQN, i.e., `Plugin1-v1.0.0`). To be explicit here, that means multiple Plugins *can* satisfy `Plugin1`.
 
-For example, let's say we have a generic `BehaviorName` called `com.nfg.generic.messaging.chat`. Let's also assume we've documented this `BehaviorName` and it simply is a generic method to send a simple chat message. No fuss, no muss!
+For example, let's say we have a generic `BehaviorName` called `com.hangouthere.generic.messaging.chat`. Let's also assume we've documented this `BehaviorName` and it simply is a generic method to send a simple chat message. No fuss, no muss!
 
 What may not be obvious, is there may be 2 or more Plugins that can satisfy this! Read up more in [`Behavior`s]() section to get a better grasp of this.
 
 ```mermaid
 flowchart LR
 
-subgraph Satisfy com.nfg.generic.messaging.chat
-B["com.nfg.messaging.chat.twitch"] & C["com.nfg.messaging.chat.discord"] & D["com.nfg.messaging.chat.slack"]
+subgraph Satisfy com.hangouthere.generic.messaging.chat
+B["com.hangouthere.messaging.chat.twitch"] & C["com.hangouthere.messaging.chat.discord"] & D["com.hangouthere.messaging.chat.slack"]
 end
 
 subgraph Requested AccessorName
-A["com.nfg.generic.messaging.chat"] --> B & C & D
+A["com.hangouthere.generic.messaging.chat"] --> B & C & D
 end
 
 subgraph Third Party Libs/Wrappers
@@ -252,7 +274,7 @@ To explicitly demonstrate, the desired resolution here is:
 
 ```mermaid
 flowchart LR
-A["com.twitch.somelib-v1.0.0"] --> B["com.nfg.messaging.chat.twitch-v1.2.0"] --> C["you.get-v0.3.1"] --> D["com.nfg.messaging.chat.discord-v1.0.4"] --> E["the.idea-v0.6.9"] --> F["com.nfg.messaging.chat.slack-v1.1.3"] --> G["com.nfg.generic.messaging.chat"]
+A["com.twitch.somelib-v1.0.0"] --> B["com.hangouthere.messaging.chat.twitch-v1.2.0"] --> C["you.get-v0.3.1"] --> D["com.hangouthere.messaging.chat.discord-v1.0.4"] --> E["the.idea-v0.6.9"] --> F["com.hangouthere.messaging.chat.slack-v1.1.3"] --> G["com.hangouthere.generic.messaging.chat"]
 ```
 
 Take note that this tree is still reasonably simple, and resolves seemingly linearly. However as seen in the `AccesorName` graph earlier, there are independent Dependency Trees.
