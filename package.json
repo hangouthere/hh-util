@@ -1,7 +1,7 @@
 {
   "name": "@hangouthere/util",
   "description": "Utility Library for HangoutHere products",
-  "version": "0.0.1-25",
+  "version": "0.0.1-1",
   "license": "MIT",
   "author": "CodexHere <codexhere@outlook.com>",
   "main": "./dist/index.js",
