@@ -9,6 +9,10 @@ module.exports = {
     node: true
   },
   overrides: [
+    {
+      files: ['*.ts', '*.js'],
+      rules: { '@typescript-eslint/no-explicit-any': 'error' }
+    },
     // Ignore explicity `any` types for test files
     {
       files: ['*.test.ts', '*.spec.ts', '*.test.js', '*.spec.js', '__mocks__/*'],

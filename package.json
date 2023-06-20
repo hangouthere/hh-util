@@ -1,7 +1,7 @@
 {
   "name": "@hangouthere/util",
   "description": "Utility Library for HangoutHere products",
-  "version": "0.0.1-0",
+  "version": "0.0.1-25",
   "license": "MIT",
   "author": "CodexHere <codexhere@outlook.com>",
   "main": "./dist/index.js",
@@ -79,6 +79,7 @@
   "exports": {
     "./tsconfig": "./tsconfig.json",
     "./prettier": "./.prettierrc.cjs",
+    "./eslint": "./.eslintrc.cjs",
     "./*": "./dist/*"
   }
 }
