@@ -18,7 +18,6 @@
     "hh-dev": "./.scripts/npm/dev.sh",
     "hh-prod": "./.scripts/npm/prod.sh",
     "hh-publish": "./.scripts/npm/publish.sh",
-    "hh-dev-linked": "./.scripts/npm/dev-linked.sh",
     "hh-test": "./.scripts/npm/test.sh",
     "hh-compose-down": "./.scripts/compose/down.sh",
     "hh-compose-dev": "./.scripts/compose/dev.sh",

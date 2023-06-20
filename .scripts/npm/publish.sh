@@ -13,4 +13,6 @@
 
 TRIGGER_NAME=$1
 
-npm version prerelease && npm publish && npx hh-util_trigger $TRIGGER_NAME
+npm version prerelease && npm publish
+
+[[ $? -eq 0 && -n $TRIGGER_NAME ]] && npx hh-util_trigger $TRIGGER_NAME

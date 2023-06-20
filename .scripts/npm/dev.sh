@@ -6,7 +6,6 @@
 # * linting
 # * exporting types
 # * bundler build
-# * link trigger
 
 NODE_ENV=development \
   npm i && \
@@ -16,6 +15,4 @@ EXTERNALS="./node_modules*" \
 FORCEBUILDONLY=1 \
 RUNTIMEPLATFORM=node \
 FILESRC=index.ts \
-  npx hh-util_nodemon --exec " \
-    npx hh-util_fullBuild \
-  "
+  npx hh-util_nodemon --exec "npx hh-util_fullBuild"
