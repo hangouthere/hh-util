@@ -1,7 +1,7 @@
 import envPlugin from '@chialab/esbuild-plugin-env';
 import htmlPlugin from '@chialab/esbuild-plugin-html';
 import chalk from 'chalk';
-import esbuild, { type BuildContext, type BuildOptions, type Platform } from 'esbuild';
+import esbuild, { type BuildContext, type BuildOptions, type Format, type Platform } from 'esbuild';
 import copyStaticFiles from 'esbuild-copy-static-files';
 import sassPlugin from 'esbuild-plugin-sass';
 import path from 'path';
@@ -57,7 +57,8 @@ const ENV_ESBUILDEOPTIONS: Partial<ESBuilderOptions> = {
     platform: process.env.RUNTIMEPLATFORM ? (process.env.RUNTIMEPLATFORM as Platform) : undefined,
     sourcemap: isProd ? false : 'inline',
     target: process.env.JSTARGET ? process.env.JSTARGET : undefined,
-    logLevel: process.env.VERBOSE ? 'debug' : 'info'
+    logLevel: process.env.VERBOSE ? 'debug' : 'info',
+    format: process.env.FORMAT ? (process.env.FORMAT as Format): 'esm',
   }
 };
 
