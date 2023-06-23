@@ -24,7 +24,8 @@
     "hh-compose-dev-linked": "./.scripts/compose/dev_linked.sh",
     "hh-compose-prod": "./.scripts/compose/prod.sh",
     "hh-compose-test": "./.scripts/compose/test.sh",
-    "hh-compose-test-debug": "./.scripts/compose/test-debug.sh"
+    "hh-compose-test-debug": "./.scripts/compose/test-debug.sh",
+    "hh-compose-update-deps": "./.scripts/compose/update-deps.sh"
   },
   "scripts": {
     "start": "echo \"You should use the Docker Compose scripts located in './.scripts/compose' to start this project\""
