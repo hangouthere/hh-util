@@ -5,6 +5,7 @@ services:
     command: 'npx hh-dev'
     environment:
       - NODE_ENV=development
+      - NODE_OPTIONS=--enable-source-maps --trace-warnings
       - VERBOSE=1
     ports:
       - 9220:9229

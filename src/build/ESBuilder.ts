@@ -1,64 +1,70 @@
 import envPlugin from '@chialab/esbuild-plugin-env';
 import htmlPlugin from '@chialab/esbuild-plugin-html';
 import chalk from 'chalk';
-import esbuild, { type BuildContext, type BuildOptions, type Format, type Platform } from 'esbuild';
+import esbuild, { type BuildContext, type BuildOptions, type Format, type Platform, type ServeOptions } from 'esbuild';
 import copyStaticFiles from 'esbuild-copy-static-files';
 import sassPlugin from 'esbuild-plugin-sass';
-import path from 'path';
+import { existsSync as exists } from 'node:fs';
+import path from 'node:path';
 import { definedProps } from '../core/index.js';
 
 const isProd = process.env.NODE_ENV === 'production';
 
-interface ESBuilderOptions {
-  dirStatic: string;
-  dirOut: string;
+interface HHBuilderOptions {
   dirSrc: string;
-  devPort: number;
+  dirStatic: string;
   forceBuildOnly: boolean;
   nodeEnv: string;
   verbose: boolean;
 
+  serveOptions: ServeOptions;
   buildOptions: BuildOptions;
 }
 
-const DEFAULT_ESBUILDEROPTIONS: Partial<ESBuilderOptions> = {
-  devPort: 9000,
-  dirOut: 'dist',
+const DEFAULT_ESBUILDEROPTIONS: Partial<HHBuilderOptions> = {
   dirSrc: path.resolve('src'),
-  dirStatic: 'static',
+  dirStatic: path.resolve('static'),
   forceBuildOnly: false,
   nodeEnv: 'development',
   verbose: false,
+
+  serveOptions: {
+    port: 9000,
+    servedir: 'dist'
+  },
 
   buildOptions: {
     assetNames: isProd ? undefined : '[name]',
     bundle: true,
     metafile: true,
     minify: isProd,
+    outdir: path.resolve('dist'),
     platform: 'browser',
     sourcemap: isProd ? false : 'inline',
     target: 'esnext'
   }
 };
 
-const ENV_ESBUILDEOPTIONS: Partial<ESBuilderOptions> = {
-  devPort: process.env.DEVPORT ? parseInt(process.env.DEVPORT) : undefined,
+const ENV_ESBUILDEOPTIONS: Partial<HHBuilderOptions> = {
   dirSrc: process.env.DIRSRC ? path.resolve(process.env.DIRSRC) : undefined,
-  dirOut: process.env.DIROUT ? process.env.DIROUT : undefined,
   dirStatic: process.env.DIRSTATIC ? process.env.DIRSTATIC : undefined,
   forceBuildOnly: !!process.env.FORCEBUILDONLY,
   nodeEnv: process.env.NODE_ENV || 'development',
   verbose: !!process.env.VERBOSE,
 
+  serveOptions: {
+    port: process.env.DEVPORT ? parseInt(process.env.DEVPORT) : undefined,
+    servedir: process.env.DIROUT ? process.env.DIROUT : undefined
+  },
+
   buildOptions: {
-    metafile: true,
+    format: process.env.FORMAT ? (process.env.FORMAT as Format) : 'esm',
+    logLevel: process.env.VERBOSE ? 'debug' : 'info',
     minify: isProd,
     outdir: process.env.DIROUT ? process.env.DIROUT : undefined,
     platform: process.env.RUNTIMEPLATFORM ? (process.env.RUNTIMEPLATFORM as Platform) : undefined,
     sourcemap: isProd ? false : 'inline',
-    target: process.env.JSTARGET ? process.env.JSTARGET : undefined,
-    logLevel: process.env.VERBOSE ? 'debug' : 'info',
-    format: process.env.FORMAT ? (process.env.FORMAT as Format): 'esm',
+    target: process.env.JSTARGET ? process.env.JSTARGET : undefined
   }
 };
 
@@ -99,12 +105,12 @@ export class ESBuilder {
    */
   get entryPoints(): BuildOptions['entryPoints'] {
     // Grab ENV value, or default to index.html
-    const entryPoints = (process.env.FILESRC ? process.env.FILESRC.split('|') : []) || ['index.html'];
+    const entryPoints = process.env.FILESRC ? process.env.FILESRC.split('|') : ['index.html'];
 
     console.log('Root Path:', this.rootPath);
 
     // Build path relative to root dir
-    return entryPoints.map(ep => path.join(this.rootPath, ep));
+    return entryPoints.map(entryPoint => path.resolve(this.rootPath, entryPoint));
   }
 
   /**
@@ -113,7 +119,7 @@ export class ESBuilder {
    * See: https://esbuild.github.io/api/#external
    */
   get externals(): BuildOptions['external'] {
-    return (process.env.EXTERNALS ? process.env.EXTERNALS.split('|') : []) || [];
+    return process.env.EXTERNALS ? process.env.EXTERNALS.split('|') : [];
   }
 
   /**
@@ -123,10 +129,10 @@ export class ESBuilder {
    */
   get loaders(): BuildOptions['loader'] {
     return {
-      '.ts': 'ts',
-      '.tsx': 'tsx',
       '.png': 'file',
-      '.svg': 'file'
+      '.svg': 'file',
+      '.ts': 'ts',
+      '.tsx': 'tsx'
     };
   }
 
@@ -134,46 +140,56 @@ export class ESBuilder {
    * Build Plugin array for ESBuild pipeline
    */
   get plugins(): BuildOptions['plugins'] {
-    return [
-      envPlugin(),
-      htmlPlugin(),
-      sassPlugin(),
-      copyStaticFiles({
-        src: this._options.dirStatic,
-        dest: this._options.dirOut
-      })
-    ];
+    const opts = this.options;
+    const plugins = [envPlugin(), htmlPlugin(), sassPlugin()];
+
+    if (opts.dirStatic) {
+      console.info(chalk.gray(`Checking for: '${opts.dirStatic}'`));
+
+      if (true === exists(opts.dirStatic)) {
+        console.info(chalk.white(`Adding Static Copy...`));
+        plugins.push(
+          copyStaticFiles({
+            src: opts.dirStatic,
+            dest: opts.buildOptions?.outdir
+          })
+        );
+      } else {
+        console.log(chalk.red(`Warning: '${opts.dirStatic}' doesn't exist!`));
+      }
+    }
+
+    return plugins;
   }
 
   /**
    * Dynamically generates options as needed, typically upon ready to build or serve for dev.
    */
-  get options(): ESBuilderOptions {
-    let opts = Object.assign(
-      {},
-      definedProps(this._options),
-      definedProps<ESBuilderOptions>(DEFAULT_ESBUILDEROPTIONS),
-      definedProps<ESBuilderOptions>(ENV_ESBUILDEOPTIONS)
-    );
+  get options(): HHBuilderOptions {
+    const opts: HHBuilderOptions = {
+      ...definedProps<HHBuilderOptions>(DEFAULT_ESBUILDEROPTIONS),
+      ...definedProps<HHBuilderOptions>(ENV_ESBUILDEOPTIONS),
+      ...this._options,
 
-    // Continue building based on Defaults+ENV
-    opts = Object.assign(opts, {
-      buildOptions: Object.assign(
-        definedProps<BuildOptions>(DEFAULT_ESBUILDEROPTIONS.buildOptions ?? {}),
-        definedProps<BuildOptions>(ENV_ESBUILDEOPTIONS.buildOptions ?? {}),
-        definedProps<BuildOptions>(opts.buildOptions),
-        {
-          outdir: opts.dirOut,
-          entryPoints: this.entryPoints,
-          external: this.externals,
-          loader: this.loaders
-        }
-      )
-    });
+      serveOptions: {
+        ...definedProps<ServeOptions>(DEFAULT_ESBUILDEROPTIONS.serveOptions ?? {}),
+        ...definedProps<ServeOptions>(ENV_ESBUILDEOPTIONS.serveOptions ?? {}),
+        ...definedProps<ServeOptions>(this._options.serveOptions ?? {})
+      },
+
+      buildOptions: {
+        ...definedProps<BuildOptions>(DEFAULT_ESBUILDEROPTIONS.buildOptions ?? {}),
+        ...definedProps<BuildOptions>(ENV_ESBUILDEOPTIONS.buildOptions ?? {}),
+        ...definedProps<BuildOptions>(this._options.buildOptions ?? {}),
+        entryPoints: this.entryPoints,
+        external: this.externals,
+        loader: this.loaders
+      }
+    };
 
     if (opts.verbose) {
       console.log('\n-- Verbose Start', Array(20).fill('-').join(''));
-      console.log('Input Options', this._options, '\n');
+      console.log('Constructor Options', this._options, '\n');
       console.log('Default Options', DEFAULT_ESBUILDEROPTIONS, '\n');
       console.log('ENV-based Options', ENV_ESBUILDEOPTIONS, '\n');
       console.log('Derived Options', opts, '\n');
@@ -183,7 +199,7 @@ export class ESBuilder {
     return opts;
   }
 
-  constructor(private _options: Partial<ESBuilderOptions> = {}) {}
+  constructor(private _options: Partial<HHBuilderOptions> = {}) {}
 
   /**
    * Perform Build, based on environment and options
@@ -191,7 +207,10 @@ export class ESBuilder {
   async build() {
     const opts = this.options;
 
-    const esbuildContext = await esbuild.context(opts.buildOptions);
+    const esbuildContext = await esbuild.context({
+      ...opts.buildOptions,
+      plugins: this.plugins
+    });
 
     if (opts.forceBuildOnly || this.isProd) {
       await this._runBuild(opts);
@@ -204,12 +223,15 @@ export class ESBuilder {
   /**
    * Run build only and complete
    */
-  protected async _runBuild(opts: ESBuilderOptions) {
-    const buildResult = await esbuild.build(opts.buildOptions);
-
+  protected async _runBuild(opts: HHBuilderOptions) {
     const chosenColor = isProd ? chalk.redBright : chalk.yellowBright;
 
     console.log(chosenColor('Building Bundle...'));
+
+    const buildResult = await esbuild.build({
+      ...opts.buildOptions,
+      plugins: this.plugins
+    });
 
     if (opts.verbose) {
       console.log('\n-- Verbose Start', Array(20).fill('-').join(''));
@@ -217,21 +239,18 @@ export class ESBuilder {
       console.log(Array(20).fill('-').join(''), 'Verbose End --');
     }
 
-    console.log(`Build (${opts.nodeEnv}) Complete:\n\tBuildDir: ${opts.dirOut}`);
+    console.log(`Build (${opts.nodeEnv}) Complete:\n\tBuildDir: ${opts.buildOptions.outdir}`);
   }
 
   /**
    * Run Dev Server for continuous building and serving files.
    * Useful for web-work, not so much node-work
    */
-  protected async _runDevServer(esbuildContext: BuildContext, opts: ESBuilderOptions) {
+  protected async _runDevServer(esbuildContext: BuildContext, opts: HHBuilderOptions) {
     console.log(chalk.greenBright('Running Dev Server...'));
 
-    const { host, port } = await esbuildContext.serve({
-      port: opts.devPort,
-      servedir: opts.dirOut
-    });
+    const { host, port } = await esbuildContext.serve(opts.serveOptions);
 
-    console.log(`Dev Server Running:\n\tServeDir:  ${opts.dirOut}\n\tDevServer: ${host}:${port}`);
+    console.log(`Dev Server Running:\n\tServeDir: ${opts.buildOptions.outdir}\n\tDevServer: ${host}:${port}`);
   }
 }

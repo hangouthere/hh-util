@@ -23,7 +23,7 @@ module.exports = {
 
     // Ingore unused vars prefixed with an underscore
     {
-      files: ['*.ts*', '*.js*'],
+      files: ['*.ts', '*.tsx', '*.js', '*.jsx', ],
       rules: {
         '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }]
       }
