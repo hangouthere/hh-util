@@ -21,7 +21,7 @@
     "hh-test": "./.scripts/npm/test.sh",
     "hh-compose-down": "./.scripts/compose/down.sh",
     "hh-compose-dev": "./.scripts/compose/dev.sh",
-    "hh-compose-dev-linked": "./.scripts/compose/dev_linked.sh",
+    "hh-compose-dev-linked": "./.scripts/compose/dev-linked.sh",
     "hh-compose-prod": "./.scripts/compose/prod.sh",
     "hh-compose-test": "./.scripts/compose/test.sh",
     "hh-compose-test-debug": "./.scripts/compose/test-debug.sh",
@@ -69,6 +69,7 @@
     "hangouthere",
     "hangouthereutil",
     "hangouthere-util",
+    "hh-util",
     "typescript",
     "tsconfig",
     "utility"

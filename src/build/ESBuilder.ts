@@ -1,7 +1,14 @@
 import envPlugin from '@chialab/esbuild-plugin-env';
 import htmlPlugin from '@chialab/esbuild-plugin-html';
 import chalk from 'chalk';
-import esbuild, { type BuildContext, type BuildOptions, type Format, type Platform, type ServeOptions } from 'esbuild';
+import esbuild, {
+  type BuildContext,
+  type BuildOptions,
+  type BuildResult,
+  type Format,
+  type Platform,
+  type ServeOptions
+} from 'esbuild';
 import copyStaticFiles from 'esbuild-copy-static-files';
 import sassPlugin from 'esbuild-plugin-sass';
 import { existsSync as exists } from 'node:fs';
@@ -16,6 +23,7 @@ interface HHBuilderOptions {
   forceBuildOnly: boolean;
   nodeEnv: string;
   verbose: boolean;
+  isProd: boolean;
 
   serveOptions: ServeOptions;
   buildOptions: BuildOptions;
@@ -27,6 +35,7 @@ const DEFAULT_ESBUILDEROPTIONS: Partial<HHBuilderOptions> = {
   forceBuildOnly: false,
   nodeEnv: 'development',
   verbose: false,
+  isProd,
 
   serveOptions: {
     port: 9000,
@@ -34,14 +43,15 @@ const DEFAULT_ESBUILDEROPTIONS: Partial<HHBuilderOptions> = {
   },
 
   buildOptions: {
-    assetNames: isProd ? undefined : '[name]',
     bundle: true,
     metafile: true,
     minify: isProd,
     outdir: path.resolve('dist'),
     platform: 'browser',
     sourcemap: isProd ? false : 'inline',
-    target: 'esnext'
+    target: 'esnext',
+    assetNames: 'assets/[name]-[hash]',
+    chunkNames: '[ext]/[name]-[hash]'
   }
 };
 
@@ -89,7 +99,7 @@ const ENV_ESBUILDEOPTIONS: Partial<HHBuilderOptions> = {
  * VERBOSE - Set to anything to output extra info when building
  */
 export class ESBuilder {
-  public isProd = isProd;
+  private _optionsCache?: HHBuilderOptions;
 
   /**
    * Resolve proper Root Path for project
@@ -140,7 +150,7 @@ export class ESBuilder {
    * Build Plugin array for ESBuild pipeline
    */
   get plugins(): BuildOptions['plugins'] {
-    const opts = this.options;
+    const opts = this._optionsCache as HHBuilderOptions;
     const plugins = [envPlugin(), htmlPlugin(), sassPlugin()];
 
     if (opts.dirStatic) {
@@ -155,7 +165,7 @@ export class ESBuilder {
           })
         );
       } else {
-        console.log(chalk.red(`Warning: '${opts.dirStatic}' doesn't exist!`));
+        console.log(chalk.yellowBright(`Warning: '${opts.dirStatic}' doesn't exist!`));
       }
     }
 
@@ -166,6 +176,10 @@ export class ESBuilder {
    * Dynamically generates options as needed, typically upon ready to build or serve for dev.
    */
   get options(): HHBuilderOptions {
+    if (this._optionsCache) {
+      return this._optionsCache;
+    }
+
     const opts: HHBuilderOptions = {
       ...definedProps<HHBuilderOptions>(DEFAULT_ESBUILDEROPTIONS),
       ...definedProps<HHBuilderOptions>(ENV_ESBUILDEOPTIONS),
@@ -187,16 +201,9 @@ export class ESBuilder {
       }
     };
 
-    if (opts.verbose) {
-      console.log('\n-- Verbose Start', Array(20).fill('-').join(''));
-      console.log('Constructor Options', this._options, '\n');
-      console.log('Default Options', DEFAULT_ESBUILDEROPTIONS, '\n');
-      console.log('ENV-based Options', ENV_ESBUILDEOPTIONS, '\n');
-      console.log('Derived Options', opts, '\n');
-      console.log(Array(20).fill('-').join(''), 'Verbose End --');
-    }
+    this._optionsCache = opts;
 
-    return opts;
+    return this._optionsCache;
   }
 
   constructor(private _options: Partial<HHBuilderOptions> = {}) {}
@@ -212,11 +219,25 @@ export class ESBuilder {
       plugins: this.plugins
     });
 
-    if (opts.forceBuildOnly || this.isProd) {
+    if (opts.forceBuildOnly || opts.isProd) {
       await this._runBuild(opts);
       await esbuildContext.dispose();
     } else {
       await this._runDevServer(esbuildContext, opts);
+    }
+  }
+
+  protected _verboseOutput(buildResult?: BuildResult) {
+    if (this.options.verbose) {
+      console.log('\n-- Verbose Start', Array(20).fill('-').join(''));
+      console.log('Constructor Options', this._options, '\n');
+      console.log('Default Options', DEFAULT_ESBUILDEROPTIONS, '\n');
+      console.log('ENV-based Options', ENV_ESBUILDEOPTIONS, '\n');
+      console.log('Derived Options', this.options, '\n');
+      if (buildResult) {
+        console.log('Build Result', buildResult);
+      }
+      console.log(Array(20).fill('-').join(''), 'Verbose End --');
     }
   }
 
@@ -233,11 +254,7 @@ export class ESBuilder {
       plugins: this.plugins
     });
 
-    if (opts.verbose) {
-      console.log('\n-- Verbose Start', Array(20).fill('-').join(''));
-      console.log('Build Result', buildResult);
-      console.log(Array(20).fill('-').join(''), 'Verbose End --');
-    }
+    this._verboseOutput(buildResult);
 
     console.log(`Build (${opts.nodeEnv}) Complete:\n\tBuildDir: ${opts.buildOptions.outdir}`);
   }
@@ -250,6 +267,8 @@ export class ESBuilder {
     console.log(chalk.greenBright('Running Dev Server...'));
 
     const { host, port } = await esbuildContext.serve(opts.serveOptions);
+
+    this._verboseOutput();
 
     console.log(`Dev Server Running:\n\tServeDir: ${opts.buildOptions.outdir}\n\tDevServer: ${host}:${port}`);
   }

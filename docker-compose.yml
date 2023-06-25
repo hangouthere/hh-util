@@ -1,9 +1,9 @@
 version: '3.7'
 
 services:
-  hangouthere-util:
+  hh-util:
     image: node:18-alpine3.18
-    container_name: hangouthere-util
+    container_name: hh-util
     stdin_open: true
     tty: true
     user: '1000'

@@ -9,7 +9,7 @@ services:
     volumes:
       - hh-triggers:/_triggers
 
-  hangouthere-util:
+  hh-util:
     volumes:
       - ./.docker/.npmrc-localRegistry:/app/.npmrc
       - hh-triggers:/_triggers/

@@ -1,9 +1,7 @@
 version: '3.7'
 
 services:
-  hangouthere-util:
+  hh-util:
     command: 'npx hh-prod'
     environment:
       - NODE_ENV=production
-    # volumes:
-    #   - '${HOME}/.npmrc-automate_hangouthereutils:/app/.npmrc'
