@@ -1,53 +1,87 @@
 #!/bin/sh
 
+# shellcheck disable=SC3043
+
+PROFILE="--profile standard"
+
 WARN=$(tput setaf 3)
-RESET=$(tput setaf 9)
+RESET=$(tput sgr0)
 
 installDeps() {
   rm -rf node_modules package-lock.json
-
   mkdir -p node_modules
 
-  docker compose \
-    -f ./docker-compose.yml \
-    -f ./docker-compose.dev_linked.yml \
+  eval docker compose \
+    "${PROFILE}" \
     -f ./docker-compose.setup.yml \
-    up -d npm-registry install-deps
+    up -d
 
-  docker exec -it install-deps sh -c "npm i"
+  docker exec -it setup sh -c "npm i"
 
-  docker compose \
-    -f ./docker-compose.yml \
-    -f ./docker-compose.dev_linked.yml \
+  eval docker compose \
+    "${PROFILE}" \
     -f ./docker-compose.setup.yml \
     down
 }
 
 upgradeDeps() {
-  docker compose \
-    -f ./docker-compose.yml \
-    -f ./docker-compose.dev_linked.yml \
+  eval docker compose \
+    "${PROFILE}" \
     -f ./docker-compose.setup.yml \
-    up -d npm-registry update-deps
+    up -d
 
-  docker exec -it update-deps sh -c "npx -y npm-upgrade && npm i"
+  docker exec -it setup sh -c "npx -y npm-upgrade && npm i"
 
-  docker compose \
-    -f ./docker-compose.dev_linked.yml \
+  eval docker compose \
+    "${PROFILE}" \
     -f ./docker-compose.setup.yml \
-    down npm-registry update-deps
+    down
 }
 
-alreadyInstalled=$([ -e node_modules/.package-lock.json ] && echo "1" || echo "")
+showHelp() {
+  figlet -f small -w "$(tput cols)" "hh-util Setup Script"
+  printf "\nOptions:\n\t-l: Linked development includes a local npm registry and sets up compose with appropriate volumes\n\t-f: Force Installing depdencies %s(This will also delete node_modules and package-lock.json)%s\n\n\n\n" "${WARN}" "${RESET}"
+}
 
-# Check for the existence of the "--force" or "-f" flag
-if [ -z "$alreadyInstalled" ]; then
-  printf "\n%sClean Install Activated%s\n\n" "${WARN}" "${RESET}"
-  installDeps
-elif [ "$1" = "--force" ] || [ "$1" = "-f" ]; then
-  printf "\n%sForced Install Activated%s\n\n" "${WARN}" "${RESET}"
-  installDeps
-else
-  printf "\n%sUpdating Existing Dependencies%s\n\n" "${WARN}" "${RESET}"
-  upgradeDeps
-fi
+start() {
+  local alreadyInstalled
+  local msg
+  local forceInstall
+  alreadyInstalled=$([ -e node_modules/.package-lock.json ] && echo "1" || echo "")
+
+  while getopts "flh" arg; do
+    case $arg in
+      l)
+        PROFILE="--profile registry --profile linked"
+        msg="${msg}\nLinking Local Registry"
+        ;;
+      f)
+        msg="${msg}\nForce Install Activated"
+        forceInstall=1
+        ;;
+      *)
+        showHelp
+        exit 0
+        ;;
+    esac
+  done
+
+  if [ -z "$forceInstall" ]; then
+    if [ -n "$alreadyInstalled" ]; then
+      msg="${msg}\nUpdating Existing Dependencies"
+    else
+      msg="${msg}\nClean Install Activated"
+      forceInstall=1
+    fi
+  fi
+
+  printf "\n%s------------------------------------------${msg}\n------------------------------------------\n\n%s" "${WARN}" "${RESET}"
+
+  if [ -n "$forceInstall" ]; then
+    installDeps
+  else
+    upgradeDeps
+  fi
+}
+
+start "$@"

@@ -1,26 +1,49 @@
 version: '3.7'
 
+x-setup: &setup
+  image: node:18-alpine3.18
+  container_name: setup
+  command: 'tail -f /dev/null'
+  user: '1000'
+  working_dir: '/app'
+
 services:
-  install-deps:
-    image: node:18-alpine3.18
-    container_name: install-deps
-    command: 'tail -f /dev/null'
-    user: '1000'
-    working_dir: '/app'
+  npm-registry:
+    container_name: npm-registry
+    image: verdaccio/verdaccio
     volumes:
-      - '.:/app'
+      # Make sure config file is chown 10001:65535
+      - ./.docker/verdaccio/config.yaml:/verdaccio/conf/config.yaml
+      - verdaccio-storage:/verdaccio/storage
+      - verdaccio-plugins:/verdaccio/plugins
+    profiles:
+      - registry
+    ports:
+      - 4873:4873
+    networks:
+      - hh-util_registry
+
+  setup:
+    <<: *setup
+    profiles:
+      - standard
+    volumes:
+      - .:/app
+
+  setup-linked:
+    <<: *setup
+    profiles:
+      - linked
+    volumes:
+      - .:/app
       - ./.docker/.npmrc-localRegistry:/app/.npmrc
     networks:
       - hh-util_registry
 
-  update-deps:
-    image: node:18-alpine3.18
-    container_name: update-deps
-    command: 'tail -f /dev/null'
-    user: '1000'
-    working_dir: '/app'
-    volumes:
-      - '.:/app'
-      - ./.docker/.npmrc-localRegistry:/app/.npmrc
-    networks:
-      - hh-util_registry
+volumes:
+  verdaccio-plugins:
+  verdaccio-storage:
+
+networks:
+  hh-util_registry:
+    name: hh-util_registry

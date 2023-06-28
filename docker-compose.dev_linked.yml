@@ -20,25 +20,6 @@ services:
     networks:
       - hh-util_registry
 
-  npm-registry:
-    container_name: npm-registry
-    image: verdaccio/verdaccio
-    volumes:
-      # Make sure config file is chown 10001:65535
-      - ./.docker/verdaccio/config.yaml:/verdaccio/conf/config.yaml
-      - verdaccio-storage:/verdaccio/storage
-      - verdaccio-plugins:/verdaccio/plugins
-    ports:
-      - 4873:4873
-    networks:
-      - hh-util_registry
-
 volumes:
   hh-triggers:
     name: hh-triggers
-  verdaccio-plugins:
-  verdaccio-storage:
-
-networks:
-  hh-util_registry:
-    name: hh-util_registry
