@@ -7,9 +7,7 @@
 # * exporting types
 # * bundler build
 
-NODE_ENV=development \
-  npm i && \
-  npx hh-util_clean && \
+npx hh-util_clean && \
 NODE_ENV=development \
 EXTERNALS="./node_modules*" \
 FORCEBUILDONLY=1 \
