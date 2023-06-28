@@ -1,14 +1,7 @@
 import envPlugin from '@chialab/esbuild-plugin-env';
 import htmlPlugin from '@chialab/esbuild-plugin-html';
 import chalk from 'chalk';
-import esbuild, {
-  type BuildContext,
-  type BuildOptions,
-  type BuildResult,
-  type Format,
-  type Platform,
-  type ServeOptions
-} from 'esbuild';
+import esbuild, { type BuildOptions, type BuildResult, type Format, type Platform, type ServeOptions } from 'esbuild';
 import copyStaticFiles from 'esbuild-copy-static-files';
 import sassPlugin from 'esbuild-plugin-sass';
 import { existsSync as exists } from 'node:fs';
@@ -214,16 +207,10 @@ export class ESBuilder {
   async build() {
     const opts = this.options;
 
-    const esbuildContext = await esbuild.context({
-      ...opts.buildOptions,
-      plugins: this.plugins
-    });
-
     if (opts.forceBuildOnly || opts.isProd) {
       await this._runBuild(opts);
-      await esbuildContext.dispose();
     } else {
-      await this._runDevServer(esbuildContext, opts);
+      await this._runDevServer(opts);
     }
   }
 
@@ -263,8 +250,13 @@ export class ESBuilder {
    * Run Dev Server for continuous building and serving files.
    * Useful for web-work, not so much node-work
    */
-  protected async _runDevServer(esbuildContext: BuildContext, opts: HHBuilderOptions) {
+  protected async _runDevServer(opts: HHBuilderOptions) {
     console.log(chalk.greenBright('Running Dev Server...'));
+
+    const esbuildContext = await esbuild.context({
+      ...opts.buildOptions,
+      plugins: this.plugins
+    });
 
     const { host, port } = await esbuildContext.serve(opts.serveOptions);
 
