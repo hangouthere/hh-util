@@ -30,7 +30,7 @@ upgradeDeps() {
     -f ./docker-compose.setup.yml \
     up -d npm-registry update-deps
 
-  docker exec -it update-deps sh -c "npx -y npm-upgrade"
+  docker exec -it update-deps sh -c "npx -y npm-upgrade && npm i"
 
   docker compose \
     -f ./docker-compose.dev_linked.yml \
