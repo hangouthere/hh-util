@@ -45,8 +45,9 @@ if [ -z "$alreadyInstalled" ]; then
   printf "\n%sClean Install Activated%s\n\n" "${WARN}" "${RESET}"
   installDeps
 elif [ "$1" = "--force" ] || [ "$1" = "-f" ]; then
-printf "\n%Forced Install Activated%s\n\n" "${WARN}" "${RESET}"
+  printf "\n%sForced Install Activated%s\n\n" "${WARN}" "${RESET}"
   installDeps
 else
+  printf "\n%sUpdating Existing Dependencies%s\n\n" "${WARN}" "${RESET}"
   upgradeDeps
 fi

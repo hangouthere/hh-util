@@ -8,5 +8,5 @@ docker compose \
   -f docker-compose.dev_linked.yml \
   -f docker-compose.test.yml \
   -f docker-compose.prod.yml \
-  -f docker-compose.update-deps.yml \
+  -f docker-compose.setup.yml \
   down --volumes
