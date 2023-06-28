@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  install-deps:
+    image: node:18-alpine3.18
+    container_name: install-deps
+    command: 'tail -f /dev/null'
+    user: '1000'
+    working_dir: '/app'
+    volumes:
+      - '.:/app'
+      - ./.docker/.npmrc-localRegistry:/app/.npmrc
+
+  update-deps:
+    image: node:18-alpine3.18
+    container_name: update-deps
+    command: 'tail -f /dev/null'
+    user: '1000'
+    working_dir: '/app'
+    volumes:
+      - '.:/app'
+      - ./.docker/.npmrc-localRegistry:/app/.npmrc
+
+networks:
+  hh-util_registry:
+    name: hh-util_registry
