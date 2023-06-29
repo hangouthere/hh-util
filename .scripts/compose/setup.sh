@@ -3,6 +3,7 @@
 # shellcheck disable=SC3043
 
 PROFILE="--profile standard"
+PROFILE_LINKED="--profile registry --profile linked"
 
 WARN=$(tput setaf 3)
 RESET=$(tput sgr0)
@@ -52,7 +53,7 @@ start() {
   while getopts "flh" arg; do
     case $arg in
       l)
-        PROFILE="--profile registry --profile linked"
+        PROFILE="$PROFILE_LINKED"
         msg="${msg}\nLinking Local Registry"
         ;;
       f)
