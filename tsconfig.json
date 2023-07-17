@@ -6,15 +6,17 @@
     "allowSyntheticDefaultImports": true,
     "checkJs": true,
     "esModuleInterop": true,
-    "verbatimModuleSyntax": true,
     "jsx": "react-jsx",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
+    "noErrorTruncation": true,
+    "noImplicitThis": true,
     "outDir": "./dist",
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
     "target": "esnext",
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals"],
+    "verbatimModuleSyntax": true
   }
 }
