@@ -7,9 +7,10 @@
     "checkJs": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
-    "module": "ESNext",
+    "module": "NodeNext",
     "moduleResolution": "nodenext",
     "noErrorTruncation": true,
+    "noImplicitOverride": true,
     "noImplicitThis": true,
     "outDir": "./dist",
     "resolveJsonModule": true,
@@ -17,6 +18,11 @@
     "strict": true,
     "target": "esnext",
     "types": ["vitest/globals"],
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+
+    "paths": {
+      "-/*": ["./src/*"],
+      "-tests/*": ["./tests/*"]
+    }
   }
 }

@@ -13,6 +13,7 @@ const isProd = process.env.NODE_ENV === 'production';
 interface HHBuilderOptions {
   dirSrc: string;
   dirStatic: string;
+  outdirStatic: string;
   forceBuildOnly: boolean;
   nodeEnv: string;
   verbose: boolean;
@@ -25,6 +26,7 @@ interface HHBuilderOptions {
 const DEFAULT_ESBUILDEROPTIONS: Partial<HHBuilderOptions> = {
   dirSrc: path.resolve('src'),
   dirStatic: path.resolve('static'),
+  outdirStatic: path.resolve('dist'),
   forceBuildOnly: false,
   nodeEnv: 'development',
   verbose: false,
@@ -51,6 +53,7 @@ const DEFAULT_ESBUILDEROPTIONS: Partial<HHBuilderOptions> = {
 const ENV_ESBUILDEOPTIONS: Partial<HHBuilderOptions> = {
   dirSrc: process.env.DIRSRC ? path.resolve(process.env.DIRSRC) : undefined,
   dirStatic: process.env.DIRSTATIC ? process.env.DIRSTATIC : undefined,
+  outdirStatic: process.env.OUTDIRSTATIC ? process.env.OUTDIRSTATIC : undefined,
   forceBuildOnly: !!process.env.FORCEBUILDONLY,
   nodeEnv: process.env.NODE_ENV || 'development',
   verbose: !!process.env.VERBOSE,
@@ -154,7 +157,7 @@ export class ESBuilder {
         plugins.push(
           copyStaticFiles({
             src: opts.dirStatic,
-            dest: opts.buildOptions?.outdir
+            dest: opts.outdirStatic
           })
         );
       } else {

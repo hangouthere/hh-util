@@ -19,12 +19,12 @@
     "hh-prod": "./.scripts/npm/prod.sh",
     "hh-publish": "./.scripts/npm/publish.sh",
     "hh-test": "./.scripts/npm/test.sh",
+    "hh-test_debug": "./.scripts/npm/test_debug.sh",
     "hh-compose-down": "./.scripts/compose/down.sh",
     "hh-compose-dev": "./.scripts/compose/dev.sh",
     "hh-compose-dev-linked": "./.scripts/compose/dev-linked.sh",
     "hh-compose-prod": "./.scripts/compose/prod.sh",
     "hh-compose-test": "./.scripts/compose/test.sh",
-    "hh-compose-test-debug": "./.scripts/compose/test-debug.sh",
     "hh-compose-setup": "./.scripts/compose/setup.sh"
   },
   "scripts": {
@@ -51,6 +51,7 @@
     "@types/node": "^20.3.2",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
+    "@vitest/coverage-istanbul": "^0.33.0",
     "chalk": "^5.2.0",
     "concurrently": "^8.2.0",
     "esbuild": "^0.18.10",

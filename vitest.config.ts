@@ -5,6 +5,7 @@ export default defineConfig({
     globals: true,
     restoreMocks: true,
     coverage: {
+      provider: 'istanbul',
       reporter: ['text', 'json', 'html']
     }
   }

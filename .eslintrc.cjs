@@ -3,16 +3,12 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint'],
   root: true,
-  ignorePatterns: ['dist/**/*', 'src/**/*.test.ts', 'src/**/__mocks__/*'],
+  ignorePatterns: ['dist/**/*', '**/*.test.ts', '**/__mocks__/*'],
   env: {
     browser: true,
     node: true
   },
   overrides: [
-    {
-      files: ['*.ts', '*.js'],
-      rules: { '@typescript-eslint/no-explicit-any': 'error' }
-    },
     // Ignore explicity `any` types for test files
     {
       files: ['*.test.ts', '*.spec.ts', '*.test.js', '*.spec.js', '__mocks__/*'],
@@ -23,9 +19,16 @@ module.exports = {
 
     // Ingore unused vars prefixed with an underscore
     {
-      files: ['*.ts', '*.tsx', '*.js', '*.jsx', ],
+      files: ['*.ts', '*.tsx', '*.js', '*.jsx', '*.mjs', '*.mts'],
       rules: {
-        '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }]
+        '@typescript-eslint/no-explicit-any': 'error',
+        '@typescript-eslint/no-unused-vars': [
+          'error',
+          {
+            argsIgnorePattern: '^_',
+            varsIgnorePattern: '^_'
+          }
+        ]
       }
     }
   ]

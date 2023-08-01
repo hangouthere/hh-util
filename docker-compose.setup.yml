@@ -6,6 +6,9 @@ x-setup: &setup
   command: 'tail -f /dev/null'
   user: '1000'
   working_dir: '/app'
+  environment:
+    - NODE_ENV=development
+    - NODE_OPTIONS=--enable-source-maps --trace-warnings
 
 services:
   npm-registry:
