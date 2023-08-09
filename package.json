@@ -5,6 +5,7 @@
   "license": "MIT",
   "author": "CodexHere <codexhere@outlook.com>",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "type": "module",
   "bin": {
     "hh-util_clean": "./.scripts/npm/util_clean.sh",
